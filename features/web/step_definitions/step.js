@@ -1,7 +1,7 @@
 const { Given, When, Then } = require("@cucumber/cucumber");
 var { expect } = require("chai");
 
-const version = 1
+const version = 2;
 
 //-------------------------------CREATE ACCOUNT-----------------------------
 
@@ -30,57 +30,70 @@ When("I try to create account", async function () {
   }
 });
 
-Then("I expect to see in setup {string} in case {string}", async function (string, scenario) {
-  var url = await this.driver.getUrl();
-  if (url == "http://localhost:2368/ghost/#/setup") {
-    let response = await this.driver.$(`p=${string}`);
-    let text = await response.getText();
-    this.driver.saveScreenshot(`./assets/createAccount/V${version}E${scenario}.png`)
-    expect(response).to.not.equal(null);
-    expect(text).to.equal(string);
+Then(
+  "I expect to see in setup {string} in case {string}",
+  async function (string, scenario) {
+    var url = await this.driver.getUrl();
+    this.driver.saveScreenshot(
+      `./assets/createAccount/V${version}E${scenario}.png`
+    );
+    if (url == "http://localhost:2368/ghost/#/setup") {
+      let response = await this.driver.$(`p=${string}`);
+      let text = await response.getText();
+      expect(response).to.not.equal(null);
+      expect(text).to.equal(string);
+    }
   }
-});
+);
 
-Then("I expect to see in signin {string} in case {string}", async function (string, scenario) {
-  var url = await this.driver.getUrl();
-  if (url == "http://localhost:2368/ghost/#/signin") {
-    let response = await this.driver.$('.main-error');
-    let text = await response.getText();
-    this.driver.saveScreenshot(`./assets/login/V${version}E${scenario}.png`)
-    expect(response).to.not.equal(null);
-    if (text.includes("Too many attempts")) {
-      expect(text).to.contains("Too many attempts");
-    } else {
-      expect(text).to.contains(string);
-    }    
+Then(
+  "I expect to see in signin {string} in case {string}",
+  async function (string, scenario) {
+    this.driver.saveScreenshot(`./assets/login/V${version}E${scenario}.png`);
+    var url = await this.driver.getUrl();
+    if (url == "http://localhost:2368/ghost/#/signin") {
+      let response = await this.driver.$(".main-error");
+      let text = await response.getText();
+      expect(response).to.not.equal(null);
+      if (text.includes("Too many attempts")) {
+        expect(text).to.contains("Too many attempts");
+      } else {
+        expect(text).to.contains(string);
+      }
+    }
   }
-});
+);
 
-Then("I expect to see in forgot {string} in case {string}", async function (string, scenario) {
-  var url = await this.driver.getUrl();
-  if (url == "http://localhost:2368/ghost/#/signin") {
-    let response = await this.driver.$('.main-error');
-    let text = await response.getText();
-    this.driver.saveScreenshot(`./assets/forgot/V${version}E${scenario}.png`)
-    expect(response).to.not.equal(null);
-    if (text.includes("Too many attempts")) {
-      expect(text).to.contains("Too many attempts");
-    } else {
-      expect(text).to.contains(string);
-    }    
+Then(
+  "I expect to see in forgot {string} in case {string}",
+  async function (string, scenario) {
+    this.driver.saveScreenshot(`./assets/forgot/V${version}E${scenario}.png`);
+    var url = await this.driver.getUrl();
+    if (url == "http://localhost:2368/ghost/#/signin") {
+      let response = await this.driver.$(".main-error");
+      let text = await response.getText();
+      expect(response).to.not.equal(null);
+      if (text.includes("Too many attempts")) {
+        expect(text).to.contains("Too many attempts");
+      } else {
+        expect(text).to.contains(string);
+      }
+    }
   }
-});
+);
 
 Then("I expect to be logged in case {string}", async function (scenario) {
+  this.driver.saveScreenshot(`./assets/dashboard/V${version}E${scenario}.png`);
   var url = await this.driver.getUrl();
-  this.driver.saveScreenshot(`./assets/dashboard/V${version}E${scenario}.png`)
   expect(url).to.equal("http://localhost:2368/ghost/#/dashboard");
 });
 
-Then('I expect to be done in case {string}', async function (scenario) {
+Then("I expect to be done in case {string}", async function (scenario) {
   var url = await this.driver.getUrl();
+  this.driver.saveScreenshot(
+    `./assets/createAccount/V${version}E${scenario}.png`
+  );
   if (url != "http://localhost:2368/ghost/#/signin") {
-    this.driver.saveScreenshot(`./assets/createAccount/V${version}E${scenario}.png`)
     expect(url).to.equal("http://localhost:2368/ghost/#/setup/done");
   }
 });
@@ -118,8 +131,8 @@ When("I try to logout", async function () {
 });
 
 Then("I expect to be logged out in case {string}", async function (scenario) {
+  this.driver.saveScreenshot(`./assets/dashboard/V${version}E${scenario}.png`);
   var url = await this.driver.getUrl();
-  this.driver.saveScreenshot(`./assets/dashboard/V${version}E${scenario}.png`)
   expect(url).to.equal("http://localhost:2368/ghost/#/signin");
 });
 
@@ -167,36 +180,51 @@ When("I save changes", async function () {
   await saveButton.click();
 });
 
-Then("I expect {string} is my fullname profile in case {string}", async function (fullname, scenario) {
-  let fullnameInput = this.driver.$("#user-name");
-  let text = await fullnameInput.getValue();
-  this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
-  expect(text).to.equal(fullname);
-});
+Then(
+  "I expect {string} is my fullname profile in case {string}",
+  async function (fullname, scenario) {
+    let fullnameInput = this.driver.$("#user-name");
+    let text = await fullnameInput.getValue();
+    this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
+    expect(text).to.equal(fullname);
+  }
+);
 
-Then("I expect {string} is my slug profile in case {string}", async function (slug, scenario) {
-  let slugInput = this.driver.$("#user-slug");
-  let text = await slugInput.getValue();
-  this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
-  expect(text).to.equal(slug);
-});
+Then(
+  "I expect {string} is my slug profile in case {string}",
+  async function (slug, scenario) {
+    let slugInput = this.driver.$("#user-slug");
+    let text = await slugInput.getValue();
+    this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
+    expect(text).to.equal(slug);
+  }
+);
 
-Then("I expect {string} is my location profile in case {string}", async function (location, scenario) {
-  let locationInput = this.driver.$("#user-location");
-  let text = await locationInput.getValue();
-  this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
-  expect(text).to.equal(location);
-});
+Then(
+  "I expect {string} is my location profile in case {string}",
+  async function (location, scenario) {
+    let locationInput = this.driver.$("#user-location");
+    let text = await locationInput.getValue();
+    this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
+    expect(text).to.equal(location);
+  }
+);
 
-Then("I expect {string} is my Bio profile in case {string}", async function (bio, scenario) {
-  let bioInput = this.driver.$("#user-bio");
-  let text = await bioInput.getValue();
-  this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
-  expect(text).to.equal(bio);
-});
+Then(
+  "I expect {string} is my Bio profile in case {string}",
+  async function (bio, scenario) {
+    let bioInput = this.driver.$("#user-bio");
+    let text = await bioInput.getValue();
+    this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
+    expect(text).to.equal(bio);
+  }
+);
 
-Then("I expect to be in my profile in case {string}", async function (scenario) {
-  var url = await this.driver.getUrl();
-  this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
-  expect(url).to.contain("http://localhost:2368/ghost/#/settings/staff");
-});
+Then(
+  "I expect to be in my profile in case {string}",
+  async function (scenario) {
+    var url = await this.driver.getUrl();
+    this.driver.saveScreenshot(`./assets/profile/V${version}E${scenario}.png`);
+    expect(url).to.contain("http://localhost:2368/ghost/#/settings/staff");
+  }
+);
