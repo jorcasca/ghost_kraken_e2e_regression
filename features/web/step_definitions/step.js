@@ -1,6 +1,8 @@
 const { Given, When, Then } = require("@cucumber/cucumber");
 var { expect } = require("chai");
 
+const version = 1
+
 //-------------------------------CREATE ACCOUNT-----------------------------
 
 When(
@@ -28,11 +30,12 @@ When("I try to create account", async function () {
   }
 });
 
-Then("I expect to see in setup {string}", async function (string) {
+Then("I expect to see in setup {string} in case {string}", async function (string, scenario) {
   var url = await this.driver.getUrl();
   if (url == "http://localhost:2368/ghost/#/setup") {
     let response = await this.driver.$(`p=${string}`);
     let text = await response.getText();
+    this.driver.saveScreenshot(`./assets/createAccount/V${version}E${scenario}.png`)
     expect(response).to.not.equal(null);
     expect(text).to.equal(string);
   }
@@ -58,9 +61,10 @@ Then("I expect to be logged in", async function () {
   expect(url).to.equal("http://localhost:2368/ghost/#/dashboard");
 });
 
-Then("I expect to be done", async function () {
+Then('I expect to be done in case {string}', async function (scenario) {
   var url = await this.driver.getUrl();
   if (url != "http://localhost:2368/ghost/#/signin") {
+    this.driver.saveScreenshot(`./assets/createAccount/V${version}E${scenario}.png`)
     expect(url).to.equal("http://localhost:2368/ghost/#/setup/done");
   }
 });
