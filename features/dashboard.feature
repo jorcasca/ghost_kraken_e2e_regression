@@ -12,7 +12,7 @@ Scenario: Log in to dashboard
     When I fill login with "email@email.com" and "p4ssw0rd.."
     And I try to login
     And I wait for 5 seconds
-    Then I expect to be logged in
+    Then I expect to be logged in case "1"
 
 @user2 @web
 Scenario: Log out of dashboard
@@ -27,4 +27,5 @@ Scenario: Log out of dashboard
     And I try to login
     And I wait for 5 seconds
     And I try to logout
-    Then I expect to be logged out
+    And I wait for 2 seconds
+    Then I expect to be logged out in case "2"
